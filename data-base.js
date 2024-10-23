@@ -1,17 +1,23 @@
-const express = require('express');
-const mysql = require('mysql');
-const bcrypt = require('bcrypt');
+const mysql = require('mysql2');
 
-const app = express();
-app.use(express.json());
-
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'vehicle_rental'
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root', // Asegúrate de completar el usuario
+  password: '', // Asegúrate de completar la contraseña
+  database: 'vehicle_rental'
 });
 
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
+connection.connect((err) => {
+  if (err) {
+    console.error('Error al conectar a la base de datos:', err);
+    return;
+  }
+  console.log('Conectado a la base de datos MySQL');
 });
+
+// Manejo de errores en el flujo de la conexión
+connection.on('error', (err) => {
+  console.error('Error en la conexión a la base de datos:', err);
+});
+
+module.exports = connection;
