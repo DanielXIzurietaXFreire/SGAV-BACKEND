@@ -112,6 +112,38 @@ app.get('/api/users', (req, res) => {
   });
 });
 
+// Endpoint para obtener todos los vehículos disponibles
+app.get('/api/vehicles', (req, res) => {
+  db.query('SELECT id, brand, model, license_plate, rental_rate, status, driver_name, driver_age, driver_image, vehicle_image FROM vehicles WHERE available = 1', (err, results) => {
+    if (err) {
+      console.error('Error al consultar la base de datos:', err);
+      return res.status(500).send('Error en el servidor');
+    }
+    res.status(200).json(results);
+  });
+});
+
+
+// Endpoint para agregar un nuevo vehículo
+app.post('/api/vehicles', (req, res) => {
+  const { brand, model, license_plate, rental_rate, driver_name, driver_age, driver_image, vehicle_image } = req.body;
+
+  // Verificar que todos los campos requeridos estén presentes
+  if (!brand || !model || !license_plate || !rental_rate || !driver_name || !driver_age || !driver_image || !vehicle_image) {
+    return res.status(400).send('Todos los campos son requeridos');
+  }
+
+  db.query('INSERT INTO vehicles (brand, model, license_plate, rental_rate, status, driver_name, driver_age, driver_image, vehicle_image, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+    [brand, model, license_plate, rental_rate, 'Available', driver_name, driver_age, driver_image, vehicle_image, true], (err, results) => {
+      if (err) {
+        console.error('Error al insertar el vehículo:', err);
+        return res.status(500).send('Error en el servidor');
+      }
+      res.status(201).json({ id: results.insertId, brand, model, license_plate, rental_rate, status: 'Available', driver_name, driver_age, driver_image, vehicle_image });
+  });
+});
+
+
 // Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
