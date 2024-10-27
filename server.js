@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
-const db = require('./data-base'); // Asegúrate de que la ruta sea correcta
+const db = require('./data-base'); 
 const bcrypt = require('bcrypt');
 require('dotenv').config(); // Para cargar las variables de entorno
 
